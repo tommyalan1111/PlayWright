@@ -3,18 +3,19 @@ import { LoginPage } from '../pages/login.page';
 
 test.describe('Kịch bản kiểm thử trang Đăng nhập', () => {
 
-  test('Kiểm tra đăng nhập với thông tin giả lập', async ({ page }) => {
-    // 1. Khởi tạo đối tượng LoginPage từ class đã định nghĩa ở folder pages
+  test('Kiểm tra đăng nhập thành công', async ({ page }) => {
     const loginPage = new LoginPage(page);
-
-    // 2. Mở trang đăng nhập
     await loginPage.goto();
+    // Tài khoản chuẩn của trang demo Herokuapp
+    await loginPage.login('tomsmith', 'SuperSecretPassword!');
+    await loginPage.verifyErrorMessage('You logged into a secure area!');
+  });
 
-    // 3. Thực hiện hành động đăng nhập
-    await loginPage.login('testuser', 'Password123');
-
-    // 4. (Tùy chọn) Kiểm tra thông báo lỗi nếu trang demo trả về lỗi
-    // await loginPage.verifyErrorMessage('Invalid username or password.');
+  test('Kiểm tra đăng nhập thất bại với sai mật khẩu', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login('tomsmith', 'WrongPassword');
+    await loginPage.verifyErrorMessage('Your password is invalid!');
   });
 
 });
